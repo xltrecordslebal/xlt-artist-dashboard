@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create Account - X.L.T Records</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background-color: #0f0f11;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      padding: 20px;
+    }
+    .container {
+      background: #1c1c20;
+      padding: 30px;
+      border-radius: 12px;
+      width: 100%;
+      max-width: 400px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.5);
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+    }
+    label {
+      margin-top: 10px;
+      margin-bottom: 5px;
+      font-weight: 600;
+    }
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #2b2b31;
+      color: white;
+      margin-bottom: 10px;
+    }
+    button {
+      padding: 12px;
+      border: none;
+      background: #4f46e5;
+      color: white;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-top: 15px;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background: #3730a3;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Create Your Account</h2>
+    <form id="signupForm">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" required />
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required />
+
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required />
+
+      <button type="submit">Create Account</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('signupForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const urlParams = new URLSearchParams(window.location.search);
+      const plan = urlParams.get('plan');
+
+      // Simple account storage (just for demo)
+      const user = {
+        name: document.getElementById('name').value,
+        email: document.getElementById('email').value,
+        plan: plan || 'free'
+      };
+      localStorage.setItem('xltUser', JSON.stringify(user));
+
+      // Redirect to correct dashboard
+      if (user.plan === 'pro') {
+        window.location.href = 'dashboard-pro.html';
+      } else {
+        window.location.href = 'dashboard-free.html';
+      }
+    });
+  </script>
+</body>
+</html>

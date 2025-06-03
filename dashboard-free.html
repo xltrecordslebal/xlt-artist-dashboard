@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Free Artist Dashboard - X.L.T Records</title>
+<style>
+  body {
+    margin: 0; padding: 0;
+    font-family: 'Inter', sans-serif;
+    background: #0f0f11;
+    color: #eee;
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding: 1rem;
+  }
+  header {
+    width: 100%; max-width: 480px;
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  header h1 {
+    font-weight: 700;
+    font-size: 1.8rem;
+  }
+  form {
+    width: 100%; max-width: 480px;
+    background: #1c1c20;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    box-shadow: 0 0 12px rgba(0,0,0,0.6);
+    margin-bottom: 2rem;
+  }
+  form label {
+    display: block;
+    margin: 0.6rem 0 0.3rem;
+    font-weight: 600;
+  }
+  form input, form textarea, form select {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    border: none;
+    background: #2b2b31;
+    color: #eee;
+    font-size: 1rem;
+    font-family: inherit;
+  }
+  form textarea {
+    resize: vertical;
+    min-height: 70px;
+  }
+  button.submit-btn {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.75rem;
+    font-weight: 700;
+    font-size: 1rem;
+    background: #4f46e5;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  button.submit-btn:hover {
+    background: #3730a3;
+  }
+  section.submissions {
+    width: 100%; max-width: 480px;
+  }
+  section.submissions h2 {
+    margin-bottom: 1rem;
+    font-weight: 700;
+    font-size: 1.4rem;
+    border-bottom: 2px solid #4f46e5;
+    padding-bottom: 0.5rem;
+  }
+  ul.submission-list {
+    list-style: none;
+    padding-left: 0;
+    max-height: 320px;
+    overflow-y: auto;
+    border-radius: 8px;
+    background: #1c1c20;
+    box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+  }
+  ul.submission-list li {
+    padding: 0.8rem 1rem;
+    border-bottom: 1px solid #2e2e35;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+    animation: fadeIn 0.4s ease forwards;
+  }
+  ul.submission-list li:last-child {
+    border-bottom: none;
+  }
+  .submission-info {
+    max-width: 70%;
+  }
+  .submission-status {
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+  }
+  .status-pending {
+    background: #f59e0b; /* amber-500 */
+    color: #3b2700;
+  }
+  .status-accepted {
+    background: #22c55e; /* green-500 */
+    color: #0a2e0a;
+  }
+  .status-rejected {
+    background: #ef4444; /* red-500 */
+    color: #600000;
+  }
+  @keyframes fadeIn {
+    from {opacity: 0; transform: translateY(8px);}
+    to {opacity: 1; transform: translateY(0);}
+  }
+  /* Scrollbar for submission list */
+  ul.submission-list::-webkit-scrollbar {
+    width: 8px;
+  }
+  ul.submission-list::-webkit-scrollbar-thumb {
+    background: #4f46e5;
+    border-radius: 4px;
+  }
+  ul.submission-list::-webkit-scrollbar-track {
+    background: #1c1c20;
+  }
+  /* Responsive */
+  @media (max-width: 520px) {
+    form, section.submissions {
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Artist Dashboard – Free Plan</h1>
+  <p>Submit your songs & track status below</p>
+</header>
+
+<form id="submissionForm" autocomplete="off" spellcheck="false">
+  <label for="songTitle">Song Title *</label>
+  <input type="text" id="songTitle" name="songTitle" required />
+
+  <label for="artistName">Artist Name *</label>
+  <input type="text" id="artistName" name="artistName" required />
+
+  <label for="releaseDate">Desired Release Date *</label>
+  <input type="date" id="releaseDate" name="releaseDate" required />
+
+  <label for="genre">Genre</label>
+  <input type="text" id="genre" name="genre" placeholder="Optional" />
+
+  <label for="notes">Additional Notes</label>
+  <textarea id="notes" name="notes" placeholder="Optional"></textarea>
+
+  <button type="submit" class="submit-btn">Submit Song</button>
+</form>
+
+<section class="submissions">
+  <h2>Your Submissions</h2>
+  <ul id="submissionList" class="submission-list" aria-live="polite" aria-relevant="additions"></ul>
+</section>
+
+<script>
+  // Load user info for display (optional)
+  const user = JSON.parse(localStorage.getItem('xltUser')) || { name: 'Artist' };
+  
+  // Load submissions from localStorage or initialize empty array
+  let submissions = JSON.parse(localStorage.getItem('xltSubmissions')) || [];
+
+  const form = document.getElementById('submissionForm');
+  const listEl = document.getElementById('submissionList');
+
+  // Render submission list
+  function renderSubmissions() {
+    listEl.innerHTML = '';
+    if (submissions.length === 0) {
+      listEl.innerHTML = '<li style="text-align:center; padding: 1rem; color:#777;">No submissions yet</li>';
+      return;
+    }
+
+    submissions.forEach((submission, i) => {
+      const li = document.createElement('li');
+
+      const infoDiv = document.createElement('div');
+      infoDiv.className = 'submission-info';
+      infoDiv.innerHTML = `<strong>${submission.songTitle}</strong> by <em>${submission.artistName}</em><br />
+        Release Date: ${submission.releaseDate}<br />
+        Genre: ${submission.genre || 'N/A'}`;
+
+      const statusDiv = document.createElement('div');
+      statusDiv.className = 'submission-status ' + {
+        pending: 'status-pending',
+        accepted: 'status-accepted',
+        rejected: 'status-rejected'
+      }[submission.status || 'pending'];
+      statusDiv.textContent = submission.status ? submission.status.toUpperCase() : 'PENDING';
+
+      li.appendChild(infoDiv);
+      li.appendChild(statusDiv);
+
+      listEl.appendChild(li);
+    });
+  }
+
+  // On form submit
+  form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    const songTitle = form.songTitle.value.trim();
+    const artistName = form.artistName.value.trim();
+    const releaseDate = form.releaseDate.value;
+    const genre = form.genre.value.trim();
+    const notes = form.notes.value.trim();
+
+    // Validate required fields (already enforced by required attribute)
+
+    // Create submission object
+    const newSubmission = {
+      id: Date.now(),
+      songTitle,
+      artistName,
+      releaseDate,
+      genre,
+      notes,
+      status: 'pending' // default status on submission
+    };
+
+    submissions.unshift(newSubmission); // newest on top
+    localStorage.setItem('xltSubmissions', JSON.stringify(submissions));
+
+    renderSubmissions();
+
+    // Reset form
+    form.reset();
+    form.songTitle.focus();
+  });
+
+  // Initial render
+  renderSubmissions();
+</script>
+
+</body>
+</html>

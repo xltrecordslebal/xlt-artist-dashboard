@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>X.L.T Records Plans</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+    body {
+      background-color: #0f0f11;
+      color: #fff;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+    header {
+      text-align: center;
+      margin-bottom: 40px;
+      animation: fadeIn 1s ease-in-out;
+    }
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+    }
+    .plans {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      width: 100%;
+      max-width: 400px;
+      animation: fadeUp 1s ease-in-out;
+    }
+    .plan {
+      background: #1c1c20;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.5);
+      transition: transform 0.3s ease;
+    }
+    .plan:hover {
+      transform: translateY(-5px);
+    }
+    .plan h2 {
+      font-size: 1.5rem;
+      margin-bottom: 10px;
+    }
+    .plan ul {
+      list-style: none;
+      margin-bottom: 20px;
+    }
+    .plan ul li {
+      margin: 8px 0;
+    }
+    .plan button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      background: #4f46e5;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+    .plan button:hover {
+      background: #3730a3;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Choose Your Plan - X.L.T Records</h1>
+  </header>
+
+  <div class="plans">
+    <div class="plan">
+      <h2>Free Plan</h2>
+      <ul>
+        <li>Unlimited Releases</li>
+        <li>Scheduled at Midnight</li>
+        <li>Basic Delivery to Platforms</li>
+        <li>Simple Analytics</li>
+      </ul>
+      <button onclick="location.href='signup.html?plan=free'">Choose Free Plan</button>
+    </div>
+
+    <div class="plan">
+      <h2>Pro Plan – $19</h2>
+      <ul>
+        <li>Everything in Free</li>
+        <li>Custom Release Date & Time</li>
+        <li>Priority Delivery</li>
+        <li>Advanced Metadata Control</li>
+      </ul>
+      <button onclick="location.href='payment.html'">Choose Pro Plan</button>
+    </div>
+  </div>
+
+</body>
+</html>

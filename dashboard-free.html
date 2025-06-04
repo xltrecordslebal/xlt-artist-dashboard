@@ -100,109 +100,57 @@
     <p>Welcome, artist. Manage your music here.</p>
   </header>
 
-  <!-- Login UI -->
-  <div id="login-section">
-    <input type="email" id="email" placeholder="Email" />
-    <input type="password" id="password" placeholder="Password" />
-    <button onclick="login()">Login</button>
-  </div>
+  <nav>
+    <button onclick="showSection('dashboard')">Dashboard</button>
+    <button onclick="showSection('submit')">Submit Music</button>
+    <button onclick="showSection('release')">Releases</button>
+    <button onclick="showSection('profile')">Account</button>
+  </nav>
 
-  <div id="dashboard-section" style="display: none;">
-    <nav>
-      <button onclick="showSection('dashboard')">Dashboard</button>
-      <button onclick="showSection('submit')">Submit Music</button>
-      <button onclick="showSection('release')">Releases</button>
-      <button onclick="showSection('profile')">Account</button>
-      <button onclick="logout()">Logout</button>
-    </nav>
+  <div class="content">
+    <div id="dashboard" class="section">
+      <h2>Overview</h2>
+      <p>This is your artist dashboard. Submit songs, track releases, and manage your account. Some features are limited on the Free Plan. <strong>Upgrade to Pro</strong> to access scheduled releases and priority support.</p>
+    </div>
 
-    <div class="content">
-      <div id="dashboard" class="section">
-        <h2>Overview</h2>
-        <p>This is your artist dashboard. Submit songs, track releases, and manage your account. Some features are limited on the Free Plan. <strong>Upgrade to Pro</strong> to access scheduled releases and priority support.</p>
-      </div>
+    <div id="submit" class="section hidden">
+      <h2>Submit Music</h2>
+      <form id="submitForm">
+        <label>Song Title *</label>
+        <input type="text" required />
+        <label>Artist Name *</label>
+        <input type="text" required />
+        <label>Release Date</label>
+        <input type="date" />
+        <label>Genre</label>
+        <input type="text" />
+        <label>Notes</label>
+        <textarea placeholder="Additional information..."></textarea>
+        <button type="submit" class="btn-submit">Submit Song</button>
+      </form>
+    </div>
 
-      <div id="submit" class="section hidden">
-        <h2>Submit Music</h2>
-        <form id="submitForm">
-          <label>Song Title *</label>
-          <input type="text" required />
-          <label>Artist Name *</label>
-          <input type="text" required />
-          <label>Release Date</label>
-          <input type="date" />
-          <label>Genre</label>
-          <input type="text" />
-          <label>Notes</label>
-          <textarea placeholder="Additional information..."></textarea>
-          <button type="submit" class="btn-submit">Submit Song</button>
-        </form>
-      </div>
+    <div id="release" class="section hidden">
+      <h2>Your Releases</h2>
+      <p>Currently in Free Plan. Scheduled release control is only available in <strong>Pro Plan</strong>. Upgrade to access full release tools.</p>
+    </div>
 
-      <div id="release" class="section hidden">
-        <h2>Your Releases</h2>
-        <p>Currently in Free Plan. Scheduled release control is only available in <strong>Pro Plan</strong>. Upgrade to access full release tools.</p>
-      </div>
-
-      <div id="profile" class="section hidden">
-        <h2>Account Details</h2>
-        <div class="subscription-info">
-          <div class="info-pair"><strong>Plan:</strong> Free</div>
-          <div class="info-pair"><strong>Subscription:</strong> Active</div>
-          <div class="info-pair"><strong>Next Billing:</strong> N/A</div>
-          <div class="info-pair"><strong>Upgrade:</strong> <a href="#" style="color:#4f46e5;">Switch to Pro</a></div>
-        </div>
+    <div id="profile" class="section hidden">
+      <h2>Account Details</h2>
+      <div class="subscription-info">
+        <div class="info-pair"><strong>Plan:</strong> Free</div>
+        <div class="info-pair"><strong>Subscription:</strong> Active</div>
+        <div class="info-pair"><strong>Next Billing:</strong> N/A</div>
+        <div class="info-pair"><strong>Upgrade:</strong> <a href="#" style="color:#4f46e5;">Switch to Pro</a></div>
       </div>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/9.23.0/firebase-auth.js";
-
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.login = function () {
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      signInWithEmailAndPassword(auth, email, password)
-        .then(() => {
-          document.getElementById("login-section").style.display = "none";
-          document.getElementById("dashboard-section").style.display = "block";
-        })
-        .catch((error) => {
-          alert("Login Failed: " + error.message);
-        });
-    };
-
-    window.logout = function () {
-      signOut(auth).then(() => {
-        document.getElementById("login-section").style.display = "block";
-        document.getElementById("dashboard-section").style.display = "none";
-      });
-    };
-
-    onAuthStateChanged(auth, (user) => {
-      if (user) {
-        document.getElementById("login-section").style.display = "none";
-        document.getElementById("dashboard-section").style.display = "block";
-      } else {
-        document.getElementById("login-section").style.display = "block";
-        document.getElementById("dashboard-section").style.display = "none";
-      }
-    });
-
-    window.showSection = function (section) {
+  <script>
+    function showSection(section) {
       document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
       document.getElementById(section).classList.remove('hidden');
-    };
+    }
   </script>
 </body>
 </html>

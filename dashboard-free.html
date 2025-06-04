@@ -162,131 +162,133 @@
 
     <!-- Submit Music Section -->
     <div id="submit" class="section hidden">
-      <h2>Submit Music</h2>
-      <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST" enctype="multipart/form-data" id="submissionForm">
-        <div id="trackContainer">
-          <div class="track-block">
-            <h3>Track Version 1</h3>
-            <label>Song Title *</label>
-            <input type="text" name="song_title[]" required />
-            <label>Artist Name *</label>
-            <input type="text" name="artist_name[]" required />
-            <label>Version (e.g. Normal, Slowed) *</label>
-            <input type="text" name="version_type[]" placeholder="Normal" required />
-            <label>Genre</label>
-            <input type="text" name="genre[]" />
-            <label>Release Date</label>
-            <input type="date" name="release_date[]" />
-            <label>Notes</label>
-            <textarea name="notes[]" placeholder="Any info..."></textarea>
-            <label>Audio File *</label>
-            <input type="file" name="audio_file[]" accept="audio/*" required />
-          </div>
-        </div>
-        <div class="submit-buttons">
-          <button type="button" class="add-btn" onclick="addTrack()">+ Add Another Track Version</button>
-          <button type="submit">Submit All Versions</button>
-        </div>
-      </form>
-    </div>
+      <!-- MUSIC SUBMISSION SECTION -->
+<h2 style="text-align:center;">Submit Music</h2>
 
-    <!-- Releases Section -->
-    <div id="release" class="section hidden">
-      <h2>Your Releases</h2>
-      <p>Track your submitted releases and their statuses below.</p>
-      <table id="releaseTable" aria-label="Release status table">
-        <thead>
-          <tr>
-            <th>Song Title</th>
-            <th>Artist Name</th>
-            <th>Release Date</th>
-            <th>Genre</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-      <p style="margin-top:1rem; font-size: 0.9rem; color:#aaa;">
-        * Release statuses are manually updated by the label admin in <code>releases.json</code>.
-      </p>
-    </div>
+<form id="musicForm">
+  <div id="trackContainer">
+    <!-- First Track Form -->
+    <div class="track-block">
+      <h3>Track Version 1</h3>
 
-    <!-- Profile Section -->
-    <div id="profile" class="section hidden">
-      <h2>Account Details</h2>
-      <div class="subscription-info">
-        <div class="info-pair"><strong>Plan:</strong> Free</div>
-        <div class="info-pair"><strong>Subscription:</strong> Active</div>
-        <div class="info-pair"><strong>Next Billing:</strong> N/A</div>
-        <div class="info-pair"><strong>Upgrade:</strong> <a href="#" style="color:#4f46e5;">Switch to Pro</a></div>
-      </div>
+      <label>Song Title *</label>
+      <input type="text" name="song-title[]" required>
+
+      <label>Artist Name *</label>
+      <input type="text" name="artist-name[]" required>
+
+      <label>Version (e.g. Normal, Slowed) *</label>
+      <input type="text" name="version[]" required>
+
+      <label>Release Date</label>
+      <input type="date" name="release-date[]">
+
+      <label>Primary Genre *</label>
+      <select name="primary-genre[]" required>
+        <option value="">Select primary genre</option>
+        <option>Electronic</option>
+        <option>Pop</option>
+        <option>Hip-Hop</option>
+        <option>R&B</option>
+        <option>Rock</option>
+        <option>Classical</option>
+        <option>Folk</option>
+        <option>Jazz</option>
+        <option>EDM</option>
+      </select>
+
+      <label>Secondary Genre (optional)</label>
+      <select name="secondary-genre[]">
+        <option value="">Select secondary genre</option>
+        <option>Ambient</option>
+        <option>Trap</option>
+        <option>Drill</option>
+        <option>House</option>
+        <option>Lo-fi</option>
+        <option>Techno</option>
+        <option>Alternative</option>
+        <option>Synthwave</option>
+      </select>
+
+      <label>Notes</label>
+      <textarea name="notes[]" rows="2" placeholder="Any info..."></textarea>
+
+      <label>Audio File *</label>
+      <input type="file" name="audio-file[]" accept="audio/*" required>
+
+      <label>Upload Artwork (JPG/PNG) *</label>
+      <input type="file" name="artwork[]" accept=".jpg,.jpeg,.png" required>
     </div>
   </div>
 
-  <script>
-    function showSection(section) {
-      document.querySelectorAll('.section').forEach(s => s.classList.add('hidden'));
-      document.getElementById(section).classList.remove('hidden');
-    }
+  <div class="btn-group">
+    <button type="button" onclick="addTrack()">+ Add Another Track</button>
+    <button type="submit">Submit All Versions</button>
+  </div>
+</form>
 
-    async function loadReleases() {
-      try {
-        const response = await fetch('releases.json');
-        if (!response.ok) throw new Error('Could not load releases.json');
-        const releases = await response.json();
+<script>
+  let trackCount = 1;
 
-        const tbody = document.querySelector('#releaseTable tbody');
-        tbody.innerHTML = '';
+  function addTrack() {
+    trackCount++;
+    const container = document.getElementById('trackContainer');
 
-        releases.forEach(release => {
-          const tr = document.createElement('tr');
-          tr.innerHTML = `
-            <td>${release.songTitle}</td>
-            <td>${release.artistName}</td>
-            <td>${release.releaseDate || '-'}</td>
-            <td>${release.genre || '-'}</td>
-            <td class="status-${release.status.toLowerCase().replace(/\s/g,'')}">${release.status}</td>
-          `;
-          tbody.appendChild(tr);
-        });
-      } catch (err) {
-        console.error(err);
-        document.querySelector('#releaseTable tbody').innerHTML = '<tr><td colspan="5" style="color:#f87171;">Failed to load releases data.</td></tr>';
-      }
-    }
+    const block = document.createElement('div');
+    block.classList.add('track-block');
+    block.innerHTML = `
+      <h3>Track Version ${trackCount}</h3>
 
-    // Track version form generation
-    let trackCount = 1;
-    function addTrack() {
-      trackCount++;
-      const container = document.getElementById('trackContainer');
+      <label>Song Title *</label>
+      <input type="text" name="song-title[]" required>
 
-      const block = document.createElement('div');
-      block.className = 'track-block';
-      block.innerHTML = `
-        <h3>Track Version ${trackCount}</h3>
-        <label>Song Title *</label>
-        <input type="text" name="song_title[]" required />
-        <label>Artist Name *</label>
-        <input type="text" name="artist_name[]" required />
-        <label>Version (e.g. Slowed, Sped Up) *</label>
-        <input type="text" name="version_type[]" required />
-        <label>Genre</label>
-        <input type="text" name="genre[]" />
-        <label>Release Date</label>
-        <input type="date" name="release_date[]" />
-        <label>Notes</label>
-        <textarea name="notes[]" placeholder="Any info..."></textarea>
-        <label>Audio File *</label>
-        <input type="file" name="audio_file[]" accept="audio/*" required />
-      `;
-      container.appendChild(block);
-    }
+      <label>Artist Name *</label>
+      <input type="text" name="artist-name[]" required>
 
-    window.addEventListener('load', () => {
-      loadReleases();
-      showSection('dashboard');
-    });
-  </script>
+      <label>Version (e.g. Normal, Slowed) *</label>
+      <input type="text" name="version[]" required>
+
+      <label>Release Date</label>
+      <input type="date" name="release-date[]">
+
+      <label>Primary Genre *</label>
+      <select name="primary-genre[]" required>
+        <option value="">Select primary genre</option>
+        <option>Electronic</option>
+        <option>Pop</option>
+        <option>Hip-Hop</option>
+        <option>R&B</option>
+        <option>Rock</option>
+        <option>Classical</option>
+        <option>Folk</option>
+        <option>Jazz</option>
+        <option>EDM</option>
+      </select>
+
+      <label>Secondary Genre (optional)</label>
+      <select name="secondary-genre[]">
+        <option value="">Select secondary genre</option>
+        <option>Ambient</option>
+        <option>Trap</option>
+        <option>Drill</option>
+        <option>House</option>
+        <option>Lo-fi</option>
+        <option>Techno</option>
+        <option>Alternative</option>
+        <option>Synthwave</option>
+      </select>
+
+      <label>Notes</label>
+      <textarea name="notes[]" rows="2" placeholder="Any info..."></textarea>
+
+      <label>Audio File *</label>
+      <input type="file" name="audio-file[]" accept="audio/*" required>
+
+      <label>Upload Artwork (JPG/PNG) *</label>
+      <input type="file" name="artwork[]" accept=".jpg,.jpeg,.png" required>
+    `;
+    container.appendChild(block);
+  }
+</script>
 </body>
 </html>
